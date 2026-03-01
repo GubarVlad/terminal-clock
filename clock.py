@@ -34,7 +34,7 @@ def get_terminal_size():
         size = shutil.get_terminal_size()
         return size.columns, size.lines
     except:
-        return 80, 24
+        return 80, 26
 
 def check_terminal_size(required_width, required_height):
     cols, lines = get_terminal_size()
