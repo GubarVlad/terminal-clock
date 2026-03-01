@@ -10,17 +10,24 @@ CLEAR_SCREEN = '\033[2J'
 HOME = '\033[H'
 HIDE_CURSOR = '\033[?25l'
 SHOW_CURSOR = '\033[?25h'
+ALT_SCREEN_ON = '\033[?1049h'
+ALT_SCREEN_OFF = '\033[?1049l'
+SET_TITLE = '\033]0;terminal-clock\007'
 
 def clear():
     sys.stdout.write(CLEAR_SCREEN + HOME)
     sys.stdout.flush()
 
 def init_terminal():
-    sys.stdout.write(CLEAR_SCREEN + HOME + HIDE_CURSOR)
+    sys.stdout.write(SET_TITLE + ALT_SCREEN_ON + CLEAR_SCREEN + HOME + HIDE_CURSOR)
     sys.stdout.flush()
 
 def restore_terminal():
-    sys.stdout.write(SHOW_CURSOR + '\n')
+    sys.stdout.write(SHOW_CURSOR + ALT_SCREEN_OFF)
+    sys.stdout.flush()
+
+def resize_terminal(cols, rows):
+    sys.stdout.write(f'\033[8;{rows};{cols}t')
     sys.stdout.flush()
 
 def get_terminal_size():
@@ -109,6 +116,7 @@ def draw_clock(size=21):
     required_width = width
     
     check_terminal_size(required_width, required_height)
+    resize_terminal(required_width, required_height)
     init_terminal()
     
     try:
@@ -116,8 +124,7 @@ def draw_clock(size=21):
             cols, lines = get_terminal_size()
             if cols < required_width or lines < required_height:
                 restore_terminal()
-                sys.stdout.write(CLEAR_SCREEN)
-                print("Terminal resized too small. Exiting.")
+                print("\nTerminal resized too small. Exiting.")
                 break
             
             clear()
@@ -164,4 +171,4 @@ if __name__ == '__main__':
         draw_clock()
     except KeyboardInterrupt:
         restore_terminal()
-        print("Clock stopped.")
+        print("\nClock stopped.")
