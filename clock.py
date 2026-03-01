@@ -35,39 +35,52 @@ def draw_line(canvas, x0, y0, x1, y1, char='│', color=''):
 
 def draw_clock(radius=10):
     size = radius
+    canvas_size = size*2 + 1
     while True:
         clear()
         t = time.localtime()
         hour = t.tm_hour % 12
         minute = t.tm_min
         second = t.tm_sec
-        canvas = [[' ' for _ in range(size*4+1)] for _ in range(size*2+1)]
-        for y in range(-size, size+1):
-            for x in range(-size*2, size*2+1):
-                dist = math.sqrt((x/2)**2 + y**2)
+
+        canvas = [[' ' for _ in range(canvas_size)] for _ in range(canvas_size)]
+
+        for y in range(canvas_size):
+            for x in range(canvas_size):
+                dx = x - size
+                dy = y - size
+                dist = math.sqrt(dx*dx + dy*dy)
                 if abs(dist - size) < 0.5:
-                    canvas[y+size][x+size*2] = 'o'
+                    canvas[y][x] = 'o'
+
         for h in range(1, 13):
             angle = math.pi/2 - 2*math.pi*h/12
-            x = int(size * 0.8 * math.sin(angle) * 2)
-            y = int(size * 0.8 * math.cos(angle))
+            x = size + int(math.cos(angle) * (size - 2))
+            y = size - int(math.sin(angle) * (size - 2))
             num_str = str(h)
             for i, ch in enumerate(num_str):
-                canvas[size - y][size*2 + x + i - len(num_str)//2] = ch
-        x0, y0 = size*2, size
+                xi = x - len(num_str)//2 + i
+                if 0 <= xi < canvas_size and 0 <= y < canvas_size:
+                    canvas[y][xi] = ch
+
+        x0, y0 = size, size
         hour_angle = math.pi/2 - 2*math.pi*(hour + minute/60)/12
         minute_angle = math.pi/2 - 2*math.pi*minute/60
         second_angle = math.pi/2 - 2*math.pi*second/60
-        xh = x0 + int(size*0.5 * math.sin(hour_angle) * 2)
-        yh = y0 - int(size*0.5 * math.cos(hour_angle))
-        xm = x0 + int(size*0.8 * math.sin(minute_angle) * 2)
-        ym = y0 - int(size*0.8 * math.cos(minute_angle))
-        xs = x0 + int(size*0.9 * math.sin(second_angle) * 2)
-        ys = y0 - int(size*0.9 * math.cos(second_angle))
+
+        xh = x0 + int(math.cos(hour_angle) * (size*0.5))
+        yh = y0 - int(math.sin(hour_angle) * (size*0.5))
+        xm = x0 + int(math.cos(minute_angle) * (size*0.8))
+        ym = y0 - int(math.sin(minute_angle) * (size*0.8))
+        xs = x0 + int(math.cos(second_angle) * (size*0.9))
+        ys = y0 - int(math.sin(second_angle) * (size*0.9))
+
         draw_line(canvas, x0, y0, xh, yh)
         draw_line(canvas, x0, y0, xm, ym)
         draw_line(canvas, x0, y0, xs, ys, color=RED)
+
         canvas[y0][x0] = '+'
+
         for row in canvas:
             print(''.join(row))
         time.sleep(1)
