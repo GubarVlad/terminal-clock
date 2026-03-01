@@ -12,7 +12,6 @@ HIDE_CURSOR = '\033[?25l'
 SHOW_CURSOR = '\033[?25h'
 ALT_SCREEN_ON = '\033[?1049h'
 ALT_SCREEN_OFF = '\033[?1049l'
-SET_TITLE = '\033]0;terminal-clock\007'
 
 def clear():
     sys.stdout.write(CLEAR_SCREEN + HOME)
