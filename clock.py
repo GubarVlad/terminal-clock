@@ -64,15 +64,15 @@ def draw_clock(radius=10):
 
         xh = x0 + int(size*0.5 * math.sin(hour_angle) * 2)
         yh = y0 - int(size*0.5 * math.cos(hour_angle))
-        draw_line(x0, y0, xh, yh)
+        draw_line(x0, y0, xh, yh, canvas)
 
         xm = x0 + int(size*0.8 * math.sin(minute_angle) * 2)
         ym = y0 - int(size*0.8 * math.cos(minute_angle))
-        draw_line(x0, y0, xm, ym)
+        draw_line(x0, y0, xm, ym, canvas)
 
         xs = x0 + int(size*0.9 * math.sin(second_angle) * 2)
         ys = y0 - int(size*0.9 * math.cos(second_angle))
-        draw_line(x0, y0, xs, ys, RED)
+        draw_line(x0, y0, xs, ys, canvas, RED)
 
         canvas[y0][x0] = '+'
 
